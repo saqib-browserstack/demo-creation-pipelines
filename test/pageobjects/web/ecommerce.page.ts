@@ -44,10 +44,6 @@ class EcommercePage extends Page {
     // 4. Click Back to Home
     await this.backToHomeButton.waitForDisplayed();
     await this.backToHomeButton.click();
-
-    // 5. Click Scan Image
-    await this.scanImageButton.waitForDisplayed();
-    await this.scanImageButton.click();
   }
 }
 
