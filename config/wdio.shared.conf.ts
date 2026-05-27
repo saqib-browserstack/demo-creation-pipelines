@@ -6,7 +6,12 @@ export const config: WebdriverIO.Config = {
   // Add this empty array to satisfy TypeScript's strict requirements
   capabilities: [],
 
-  services: ["browserstack"],
+  services: [
+    [
+      "browserstack",
+      {},
+    ],
+  ],
 
   maxInstances: 10,
   logLevel: "info",
