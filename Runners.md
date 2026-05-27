@@ -18,3 +18,9 @@ BROWSERSTACK_USERNAME="$BROWSERSTACK_USERNAME" BROWSERSTACK_ACCESS_KEY="$BROWSER
 ```bash
 BROWSERSTACK_USERNAME="$BROWSERSTACK_USERNAME" BROWSERSTACK_ACCESS_KEY="$BROWSERSTACK_ACCESS_KEY" npm run wdio:web -- --spec test/specs/e2e-web/failure-demo/
 ```
+
+
+## Android App - E2E Test
+```bash
+BROWSERSTACK_USERNAME=$G2_BROWSERSTACK_USERNAME BROWSERSTACK_ACCESS_KEY=$G2_BROWSERSTACK_ACCESS_KEY npx --loglevel error wdio run config/wdio.android.conf.ts --spec test/specs/e2e-mobile/android/features.e2e.ts
+```

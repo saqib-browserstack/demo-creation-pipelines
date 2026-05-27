@@ -9,9 +9,7 @@ export const config: WebdriverIO.Config = {
   services: [
     [
       "browserstack",
-      {
-        app: "bs://c94d623e9070441fff20d8fa05663f0cc9987ff9",
-      },
+      {},
     ],
   ],
 

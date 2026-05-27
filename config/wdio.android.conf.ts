@@ -4,6 +4,14 @@ import {config as sharedConfig} from "./wdio.shared.conf.js";
 export const config: WebdriverIO.Config = {
   ...sharedConfig,
   specs: ["../test/specs/e2e-mobile/android/**/*.ts"],
+  services: [
+    [
+      "browserstack",
+      {
+        app: "bs://c94d623e9070441fff20d8fa05663f0cc9987ff9",
+      },
+    ],
+  ],
   capabilities: [
     {
       platformName: "android",
@@ -13,7 +21,8 @@ export const config: WebdriverIO.Config = {
         deviceName: "Samsung Galaxy S23",
         osVersion: "13.0",
         debug: true,
-        networkLogs: true,
+        networkLogs: true,        // Captures all network traffic/HAR logs
+        consoleLogs: "info",      // Captures browser console errors
         appiumVersion: "2.0.0",
       },
     },
