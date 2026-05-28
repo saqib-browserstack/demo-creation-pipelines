@@ -43,27 +43,27 @@ class CheckoutPage {
     await this.firstNameInput.waitForDisplayed({ timeout: 10000 });
     await this.firstNameInput.click();
     await this.firstNameInput.setValue(details.firstName);
-    await browser.hideKeyboard();
+    await browser.hideKeyboard().catch(() => {});
 
     await this.lastNameInput.waitForExist({ timeout: 10000 });
     await this.lastNameInput.click();
     await this.lastNameInput.setValue(details.lastName);
-    await browser.hideKeyboard();
+    await browser.hideKeyboard().catch(() => {});
 
     await this.addressInput.waitForExist({ timeout: 10000 });
     await this.addressInput.click();
     await this.addressInput.setValue(details.address);
-    await browser.hideKeyboard();
+    await browser.hideKeyboard().catch(() => {});
 
     await this.stateInput.waitForExist({ timeout: 10000 });
     await this.stateInput.click();
     await this.stateInput.setValue(details.state);
-    await browser.hideKeyboard();
+    await browser.hideKeyboard().catch(() => {});
 
     await this.postalCodeInput.waitForExist({ timeout: 10000 });
     await this.postalCodeInput.click();
     await this.postalCodeInput.setValue(details.postalCode);
-    await browser.hideKeyboard();
+    await browser.hideKeyboard().catch(() => {});
   }
 
   async submitOrder() {

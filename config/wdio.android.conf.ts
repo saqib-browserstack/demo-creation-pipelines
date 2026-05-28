@@ -3,6 +3,10 @@ import {config as sharedConfig} from "./wdio.shared.conf.js";
 
 export const config: WebdriverIO.Config = {
   ...sharedConfig,
+  mochaOpts: {
+    ui: "bdd",
+    timeout: 180000, // 3 min — AI authoring steps can take longer than default 60s
+  },
   specs: ["../test/specs/e2e-mobile/android/**/*.ts"],
   services: [
     [

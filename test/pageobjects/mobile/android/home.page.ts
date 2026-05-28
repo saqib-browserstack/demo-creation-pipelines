@@ -47,9 +47,15 @@ class HomePage {
 
   async navigateToDrawerItem(itemText: "Home" | "Offers" | "Orders" | "Favourites" | "Settings") {
     await this.openMenu();
-    const item = await $(`xpath=//android.widget.Button[./android.widget.TextView[@text="${itemText}"]]`);
-    await item.waitForDisplayed({ timeout: 5000 });
-    await item.click();
+    const item = await $(`android=new UiSelector().description("nav-${itemText.toLowerCase()}")`);
+    const itemByText = await $(`android=new UiSelector().textContains("${itemText}")`);
+    try {
+      await item.waitForDisplayed({ timeout: 3000 });
+      await item.click();
+    } catch {
+      await itemByText.waitForDisplayed({ timeout: 5000 });
+      await itemByText.click();
+    }
   }
 
   async logout() {
