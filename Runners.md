@@ -24,3 +24,8 @@ BROWSERSTACK_USERNAME="$BROWSERSTACK_USERNAME" BROWSERSTACK_ACCESS_KEY="$BROWSER
 ```bash
 BROWSERSTACK_USERNAME=$G2_BROWSERSTACK_USERNAME BROWSERSTACK_ACCESS_KEY=$G2_BROWSERSTACK_ACCESS_KEY npx --loglevel error wdio run config/wdio.android.conf.ts --spec test/specs/e2e-mobile/android/features.e2e.ts
 ```
+
+## Percy
+```bash
+npx percy exec -- npx wdio config/wdio.percy-mobile.conf.ts
+```
