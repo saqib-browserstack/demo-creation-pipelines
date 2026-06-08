@@ -1,4 +1,5 @@
 /// <reference types="@wdio/globals/types" />
+import { report } from "node:process";
 import {config as sharedConfig} from "./wdio.shared.conf.js";
 
 export const config: WebdriverIO.Config = {
@@ -11,6 +12,8 @@ export const config: WebdriverIO.Config = {
   capabilities: [
     {
       browserName: "chrome",
+      
+      
       "bstack:options": {
         buildName: "E2E Web - Demo Hub",
         sessionName: "Web Functional Journey",
@@ -18,7 +21,9 @@ export const config: WebdriverIO.Config = {
         debug: true,
         networkLogs: true,
         consoleLogs: "info",
+        performance: "report"
       },
+      
     },
   ],
 };
