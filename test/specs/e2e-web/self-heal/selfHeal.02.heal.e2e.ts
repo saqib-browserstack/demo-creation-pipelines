@@ -1,4 +1,4 @@
-import EcommercePage from "../../pageobjects/web/ecommerce.page.js";
+import EcommercePage from "../../../pageobjects/web/ecommerce.page.ts";
 
 /**
  * SELF-HEAL STEP 2 — HEAL RUN
