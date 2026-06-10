@@ -3,7 +3,19 @@ import {config as sharedConfig} from "./wdio.shared.conf.js";
 
 export const config: WebdriverIO.Config = {
   ...sharedConfig,
+  mochaOpts: {
+    ui: "bdd",
+    timeout: 180000, // 3 min — AI authoring steps can take longer than default 60s
+  },
   specs: ["../test/specs/e2e-mobile/android/**/*.ts"],
+  services: [
+    [
+      "browserstack",
+      {
+        app: "bs://340e1932c831859e59114ac4e3e75cf686412d7a",
+      },
+    ],
+  ],
   capabilities: [
     {
       platformName: "android",
@@ -13,7 +25,9 @@ export const config: WebdriverIO.Config = {
         deviceName: "Samsung Galaxy S23",
         osVersion: "13.0",
         debug: true,
-        networkLogs: true,
+        networkLogs: true,        // Captures all network traffic/HAR logs
+        consoleLogs: "info",      // Captures browser console errors
+        appiumVersion: "2.0.0",
       },
     },
   ],
