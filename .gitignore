@@ -1,4 +1,34 @@
+cat > .gitignore << 'EOF'
+# Dependencies
+node_modules/
+
+# Logs
 log
 logs
-node_modules
+*.log
+npm-debug.log*
+
+# Environment
 .env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build output
+dist/
+*.js.map
+
+# BrowserStack
+local.log
+browserstack.err
+EOF
+
+test/apps/
