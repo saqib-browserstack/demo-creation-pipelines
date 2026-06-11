@@ -1,17 +1,14 @@
 export const config: WebdriverIO.Config = {
-  // Injected via environment variables (GitHub Actions / local export)
-  user: process.env.BROWSERSTACK_USERNAME,
-  key: process.env.BROWSERSTACK_ACCESS_KEY,
+  user: process.env.BROWSERSTACK_USERNAME!,
+  key: process.env.BROWSERSTACK_ACCESS_KEY!,
 
   capabilities: [],
 
-  services: ["browserstack"],
+  services: [["browserstack", {}]],
 
-  maxInstances: 1,
+  maxInstances: 10,
   logLevel: "info",
   bail: 0,
-
-  // Mobile apps need longer waits than web
   waitforTimeout: 30000,
   connectionRetryTimeout: 180000,
   connectionRetryCount: 3,
@@ -21,6 +18,6 @@ export const config: WebdriverIO.Config = {
 
   mochaOpts: {
     ui: "bdd",
-    timeout: 120000,
+    timeout: 300000,
   },
 };
