@@ -1,10 +1,41 @@
+cat > .gitignore << 'EOF'
+# Dependencies
+node_modules/
+
+# Logs
 log
 logs
-node_modules
+*.log
+npm-debug.log*
+
+# Environment
 .env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build output
+dist/
+*.js.map
+
+# BrowserStack
+local.log
+browserstack.err
+EOF
+
+test/apps/
 
 # Screen reader files
 config/wdio.android.screen-reader.conf.ts
 config/wdio.ios.screen-reader.conf.ts
+
 test/specs/e2e-mobile/android/screen.reader.android.e2e.ts
 test/specs/e2e-mobile/ios/screen.reader.ios.e2e.ts

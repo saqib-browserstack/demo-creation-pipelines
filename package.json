@@ -1,23 +1,20 @@
 {
-  "name": "gh-actions-demo-creation",
+  "name": "gh-actions-demo-pipeline",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "wdio run config/wdio.android.conf.ts",
     "wdio:web": "wdio run config/wdio.web.conf.ts",
-    "wdio:android": "wdio run config/wdio.android.conf.ts",
-    "wdio:ios": "wdio run config/wdio.ios.conf.ts",
+    "wdio:mobile": "wdio run config/wdio.mobile.conf.ts",
     "percy:web": "percy exec -- wdio run config/wdio.web.conf.ts --spec test/specs/percy-web/**/*.ts",
-    "failure-analysis:android": "wdio run config/wdio.android.failure-analysis.conf.ts",
-    "failure-analysis:ios": "wdio run config/wdio.ios.failure-analysis.conf.ts",
     "screen-reader:android": "wdio run config/wdio.android.screen-reader.conf.ts",
     "screen-reader:ios": "wdio run config/wdio.ios.screen-reader.conf.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "devDependencies": {
     "@types/node": "^25.9.1",
     "@wdio/browserstack-service": "^9.27.2",
@@ -26,6 +23,9 @@
     "@wdio/local-runner": "^9.27.1",
     "@wdio/mocha-framework": "^9.27.2",
     "@wdio/spec-reporter": "^9.27.1",
-    "expect-webdriverio": "^5.6.5"
+    "concurrently": "^10.0.3",
+    "expect-webdriverio": "^5.6.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }

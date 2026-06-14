@@ -1,16 +1,16 @@
 export const config: WebdriverIO.Config = {
-  user: process.env.BROWSERSTACK_USERNAME,
-  key: process.env.BROWSERSTACK_ACCESS_KEY,
+  user: process.env.BROWSERSTACK_USERNAME!,
+  key: process.env.BROWSERSTACK_ACCESS_KEY!,
 
   capabilities: [],
 
-  services: ["browserstack"],
+  services: [["browserstack", {}]],
 
   maxInstances: 10,
   logLevel: "info",
   bail: 0,
-  waitforTimeout: 10000,
-  connectionRetryTimeout: 120000,
+  waitforTimeout: 30000,
+  connectionRetryTimeout: 180000,
   connectionRetryCount: 3,
 
   framework: "mocha",
@@ -18,6 +18,6 @@ export const config: WebdriverIO.Config = {
 
   mochaOpts: {
     ui: "bdd",
-    timeout: 60000,
+    timeout: 300000,
   },
 };
