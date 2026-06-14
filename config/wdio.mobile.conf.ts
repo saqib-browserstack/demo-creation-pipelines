@@ -33,6 +33,22 @@ export const config: WebdriverIO.Config = {
   ...sharedConfig,
 
   capabilities: [
+    // Android: App Discovery, Checkout, Features and Failure Analysis
+    {
+      ...baseAndroidCaps,
+      specs: [
+        "../test/specs/e2e-mobile/android/app-discovery.spec.ts",
+        "../test/specs/e2e-mobile/android/checkout.e2e.ts",
+        "../test/specs/e2e-mobile/android/features.e2e.ts",
+        "../test/specs/e2e-mobile/android/failure-analysis.e2e.ts",
+      ],
+      "appium:app": "bs-demo-android",
+      "bstack:options": {
+        ...baseBstackOptions,
+        sessionName: "Checkout & Discovery (Android)",
+      },
+    },
+
     // Android: Biometrics & Image Injection
     {
       ...baseAndroidCaps,
@@ -46,21 +62,6 @@ export const config: WebdriverIO.Config = {
         sessionName: "Biometrics & Image Injection (Android)",
         enableCameraImageInjection: true,
         enableBiometric: true,
-      },
-    },
-
-    // Android: App Discovery, Checkout, and Features
-    {
-      ...baseAndroidCaps,
-      specs: [
-        "../test/specs/e2e-mobile/android/app-discovery.spec.ts",
-        "../test/specs/e2e-mobile/android/checkout.e2e.ts",
-        "../test/specs/e2e-mobile/android/features.e2e.ts",
-      ],
-      "appium:app": "bs-demo-android",
-      "bstack:options": {
-        ...baseBstackOptions,
-        sessionName: "Checkout & Discovery (Android)",
       },
     },
 
@@ -83,6 +84,17 @@ export const config: WebdriverIO.Config = {
       "bstack:options": {
         ...baseBstackOptions,
         sessionName: "Self Heal Changed (Android)",
+      },
+    },
+
+    // iOS: Self Heal Original
+    {
+      ...baseIosCaps,
+      specs: ["../test/specs/e2e-mobile/ios/failure-analysis.e2e.ts"],
+      "appium:app": "bs-demo-ios",
+      "bstack:options": {
+        ...baseBstackOptions,
+        sessionName: "Failure Analysis (iOS)",
       },
     },
 
