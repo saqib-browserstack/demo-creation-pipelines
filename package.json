@@ -8,7 +8,10 @@
     "test": "wdio run config/wdio.android.conf.ts",
     "wdio:web": "wdio run config/wdio.web.conf.ts",
     "wdio:mobile": "wdio run config/wdio.mobile.conf.ts",
-    "percy:web": "percy exec -- wdio run config/wdio.web.conf.ts --spec test/specs/percy-web/**/*.ts",
+    "percy:web": "percy exec -- wdio run config/wdio.percy-web.conf.ts",
+    "percy:mobile": "percy exec -- wdio run config/wdio.percy-mobile.conf.ts",
+    "percy:android": "percy exec --port 5339 -- wdio run config/wdio.percy-android.conf.ts",
+    "percy:ios": "percy exec --port 5340 -- wdio run config/wdio.percy-ios.conf.ts",
     "screen-reader:android": "wdio run config/wdio.android.screen-reader.conf.ts",
     "screen-reader:ios": "wdio run config/wdio.ios.screen-reader.conf.ts"
   },
@@ -16,6 +19,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@percy/appium-app": "^2.1.0",
+    "@percy/cli": "^1.31.14",
+    "@percy/webdriverio": "^3.3.3-beta.0",
     "@types/node": "^25.9.1",
     "@wdio/browserstack-service": "^9.27.2",
     "@wdio/cli": "^9.27.1",

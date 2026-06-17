@@ -4,7 +4,7 @@ export const config: WebdriverIO.Config = {
 
   capabilities: [],
 
-  services: [["browserstack", {}]],
+  services: ["browserstack"],
 
   maxInstances: 10,
   logLevel: "info",
