@@ -1,0 +1,38 @@
+name: Functional E2E Web
+
+on:
+  workflow_dispatch:
+    inputs:
+      bs_username:
+        description: "BrowserStack Username"
+        required: false
+        type: string
+      bs_access_key:
+        description: "BrowserStack Access Key"
+        required: false
+        type: string
+
+jobs:
+  web-tests:
+    name: Run Web E2E Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Web E2E Tests
+        run: npm run wdio:web
+        env:
+          # Uses the typed-in input first. If blank, falls back to the GitHub Secret.
+          BROWSERSTACK_USERNAME: ${{ github.event.inputs.bs_username || secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ github.event.inputs.bs_access_key || secrets.BROWSERSTACK_ACCESS_KEY }}
