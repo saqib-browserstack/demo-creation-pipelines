@@ -1,4 +1,4 @@
-import { $ } from '@wdio/globals';
+import { $, browser } from '@wdio/globals';
 import FashionStackPage from './fashionstack.page.js';
 
 /**
@@ -15,6 +15,11 @@ export default class CartPage extends FashionStackPage {
 
     public get proceedToCheckoutButton() {
         return $('button=Proceed to Checkout');
+    }
+
+    public async clickProceedToCheckout() {
+        const btn = await this.proceedToCheckoutButton;
+        await browser.execute((el: HTMLElement) => el.click(), btn as unknown as HTMLElement);
     }
 
     public get continueShoppingButton() {

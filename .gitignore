@@ -30,3 +30,12 @@ dist/
 local.log
 browserstack.err
 EOF
+
+test/apps/
+
+# Screen reader files
+config/wdio.android.screen-reader.conf.ts
+config/wdio.ios.screen-reader.conf.ts
+
+test/specs/e2e-mobile/android/screen.reader.android.e2e.ts
+test/specs/e2e-mobile/ios/screen.reader.ios.e2e.ts

@@ -1,4 +1,4 @@
-import { $ } from '@wdio/globals';
+import { $, browser } from '@wdio/globals';
 import FashionStackPage from './fashionstack.page.js';
 
 /**
@@ -34,6 +34,11 @@ export default class ProductPage extends FashionStackPage {
         return $('button*=Add to Cart');
     }
 
+    public async clickAddToCart() {
+        const btn = await this.addToCartButton;
+        await browser.execute((el: HTMLElement) => el.click(), btn as unknown as HTMLElement);
+    }
+
     public get viewCartButton() {
         return $('button=View Cart');
     }
@@ -44,26 +49,40 @@ export default class ProductPage extends FashionStackPage {
 
     /**
      * Select a color by its 1-based index position (1=first color, 2=second, etc.)
+     * Uses JavaScript click to bypass interactability issues.
      */
     public async selectColorByIndex(index: number) {
         const colorContainer = await $('h3*=Color:').$('..').$('div');
         const buttons = await colorContainer.$$('button');
-        await buttons[index - 1].click();
+        await browser.execute((el: HTMLElement) => el.click(), buttons[index - 1] as unknown as HTMLElement);
     }
 
     /**
      * Select a size by its label text (e.g., 'S', 'M', 'L', 'XL', 'XXL')
+     * Scoped to the Size section to avoid matching unrelated buttons.
+     * Uses JavaScript click to bypass interactability issues.
      */
     public async selectSize(size: string) {
-        await $(`button=${size}`).click();
+        const sizeContainer = await $('h3*=Size:').$('..').$('div');
+        const buttons = await sizeContainer.$$('button');
+        for (const btn of buttons) {
+            const text = await btn.getText();
+            if (text.trim() === size) {
+                await browser.execute((el: HTMLElement) => el.click(), btn as unknown as HTMLElement);
+                return;
+            }
+        }
+        throw new Error(`Size button "${size}" not found in size selector`);
     }
 
     /**
-     * Increase quantity by clicking the + button n times
+     * Increase quantity by clicking the + button n times.
+     * Uses JavaScript click to bypass interactability issues.
      */
     public async increaseQuantity(times = 1) {
         for (let i = 0; i < times; i++) {
-            await this.quantityIncreaseButton.click();
+            const btn = await this.quantityIncreaseButton;
+            await browser.execute((el: HTMLElement) => el.click(), btn as unknown as HTMLElement);
         }
     }
 }

@@ -1,11 +1,10 @@
 /// <reference types="@wdio/globals/types" />
-import {config as sharedConfig} from "./wdio.shared.conf.js";
+import {config as sharedConfig} from "./wdio.shared.conf.ts";
 
 export const config: WebdriverIO.Config = {
   ...sharedConfig,
 
-  // Target all web e2e test files
-  specs: ["../test/specs/e2e-web/**/*.ts"],
+  specs: ["../test/specs/percy-web/**/*.ts"],
 
   capabilities: [
     {
@@ -15,13 +14,9 @@ export const config: WebdriverIO.Config = {
         osVersion: "10",
         buildName: "E2E Web - Demo Hub",
         sessionName: "Web Functional Journey",
-        aiAuthoring: "true",
-        selfHeal: true,
         debug: true,
-        performance: "report",
-        networkLogs: true,
+        networkLogs: false,
         consoleLogs: "info",
-        resolution: "1920x1080",
       } as any,
     },
     {
@@ -31,13 +26,9 @@ export const config: WebdriverIO.Config = {
         osVersion: "Sequoia",
         buildName: "E2E Web - Demo Hub",
         sessionName: "Web Functional Journey - Mac",
-        aiAuthoring: "true",
-        selfHeal: true,
         debug: true,
-        performance: "report",
-        networkLogs: true,
+        networkLogs: false,
         consoleLogs: "info",
-        resolution: "1920x1080",
       } as any,
     },
   ],
