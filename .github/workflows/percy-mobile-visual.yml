@@ -1,0 +1,62 @@
+name: Percy Mobile Visual Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      username:
+        description: "Your GitHub username (branch checked out: changed_<username>)"
+        required: true
+        type: string
+      baseline:
+        description: "Compare against which baseline?"
+        required: true
+        type: choice
+        options:
+          - master
+          - Figma
+
+jobs:
+  percy-mobile:
+    name: Run Percy Mobile Visual Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout branch changed_${{ github.event.inputs.username }}
+        uses: actions/checkout@v4
+        with:
+          ref: changed_${{ github.event.inputs.username }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      # ── Baseline: master ──────────────────────────────────────────────────────
+      # Percy compares the current build against the master baseline automatically
+      # when PERCY_BRANCH is set to the feature branch and the master baseline
+      # already exists (maintained by the scheduled cron job).
+      - name: Run Percy Mobile Tests (compare vs master)
+        if: ${{ github.event.inputs.baseline == 'master' }}
+        run: npm run wdio:app-percy
+        env:
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+          PERCY_BRANCH: changed_${{ github.event.inputs.username }}
+          PERCY_TARGET_BRANCH: master
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+
+      # ── Baseline: Figma ───────────────────────────────────────────────────────
+      # Percy compares the current build against the Figma branch baseline.
+      - name: Run Percy Mobile Tests (compare vs Figma)
+        if: ${{ github.event.inputs.baseline == 'Figma' }}
+        run: npm run wdio:app-percy
+        env:
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+          PERCY_BRANCH: changed_${{ github.event.inputs.username }}
+          PERCY_TARGET_BRANCH: Figma
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
