@@ -35,6 +35,38 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Download Apps from Upstream Releases and Upload to BrowserStack
+        run: |
+          # Fetch latest release from the upstream repo
+          RELEASE=$(curl -s https://api.github.com/repos/saqib-browserstack/demo-creation-pipelines/releases/latest)
+
+          # Download Android APK
+          APK_URL=$(echo "$RELEASE" | jq -r '.assets[] | select(.name | endswith(".apk")) | .browser_download_url')
+          echo "Downloading Android APK from: $APK_URL"
+          curl -L "$APK_URL" -o app.apk
+
+          # Download iOS IPA
+          IPA_URL=$(echo "$RELEASE" | jq -r '.assets[] | select(.name | endswith(".ipa")) | .browser_download_url')
+          echo "Downloading iOS IPA from: $IPA_URL"
+          curl -L "$IPA_URL" -o app.ipa
+
+          # Upload Android to BrowserStack with custom ID
+          echo "Uploading Android app to BrowserStack..."
+          curl -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" \
+            -X POST "https://api-cloud.browserstack.com/app-automate/upload" \
+            -F "file=@app.apk" \
+            -F "custom_id=bs-demo-android"
+
+          # Upload iOS to BrowserStack with custom ID
+          echo "Uploading iOS app to BrowserStack..."
+          curl -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" \
+            -X POST "https://api-cloud.browserstack.com/app-automate/upload" \
+            -F "file=@app.ipa" \
+            -F "custom_id=bs-demo-ios"
+        env:
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+
       - name: Create and Push Branch
         run: |
           BRANCH_NAME="changed_${{ github.event.inputs.username }}"
