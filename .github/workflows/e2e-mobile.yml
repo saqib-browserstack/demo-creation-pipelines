@@ -1,0 +1,71 @@
+name: Functional E2E Mobile
+
+on:
+  workflow_dispatch:
+    inputs:
+      bs_username:
+        description: "BrowserStack Username (leave blank if using GitHub Secrets)"
+        required: false
+        type: string
+      bs_access_key:
+        description: "BrowserStack Access Key (leave blank if using GitHub Secrets)"
+        required: false
+        type: string
+
+jobs:
+  mobile-tests:
+    name: Run Mobile E2E Tests
+    runs-on: ubuntu-latest
+
+    env:
+      BROWSERSTACK_USERNAME: ${{ github.event.inputs.bs_username || secrets.BROWSERSTACK_USERNAME }}
+      BROWSERSTACK_ACCESS_KEY: ${{ github.event.inputs.bs_access_key || secrets.BROWSERSTACK_ACCESS_KEY }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Download & Upload Apps to BrowserStack
+        run: |
+          # Define the list of apps to download
+          APPS=(
+            "https://github.com/saqib-browserstack/demo-creation-pipelines/releases/download/v1.0-apps/bs-demo-android.apk"
+            "https://github.com/saqib-browserstack/demo-creation-pipelines/releases/download/v1.0-apps/bs-demo-app-percy-changed-android.apk"
+            "https://github.com/saqib-browserstack/demo-creation-pipelines/releases/download/v1.0-apps/bs-demo-app-percy-changed-ios.ipa"
+            "https://github.com/saqib-browserstack/demo-creation-pipelines/releases/download/v1.0-apps/bs-demo-biometrics-and-camera.apk"
+            "https://github.com/saqib-browserstack/demo-creation-pipelines/releases/download/v1.0-apps/bs-demo-ios.ipa"
+            "https://github.com/saqib-browserstack/demo-creation-pipelines/releases/download/v1.0-apps/bs-demo-self-heal-changed-android.apk"
+            "https://github.com/saqib-browserstack/demo-creation-pipelines/releases/download/v1.0-apps/bs-demo-self-heal-changed-ios.ipa"
+            "https://github.com/saqib-browserstack/demo-creation-pipelines/releases/download/v1.0-apps/bs-demo-self-heal-original-android.apk"
+            "https://github.com/saqib-browserstack/demo-creation-pipelines/releases/download/v1.0-apps/bs-demo-self-heal-original-ios.ipa"
+          )
+
+          # Loop through each URL, download it, and upload it with the correct custom_id
+          for url in "${APPS[@]}"; do
+            filename=$(basename "$url")
+            custom_id="${filename%.*}" # Strips the .apk or .ipa extension
+            
+            echo "========================================================"
+            echo "Downloading: $filename"
+            curl -L -O -s "$url"
+            
+            echo "Uploading to BrowserStack with custom_id: $custom_id"
+            curl -s -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" \
+              -X POST "https://api-cloud.browserstack.com/app-automate/upload" \
+              -F "file=@$filename" \
+              -F "custom_id=$custom_id"
+            
+            echo -e "\n Successfully processed $custom_id"
+          done
+
+      - name: Run Mobile Functional E2E Tests
+        run: npm run wdio:mobile
