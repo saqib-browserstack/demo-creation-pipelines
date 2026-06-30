@@ -32,7 +32,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: "22"
           cache: "npm"
 
       - name: Install Dependencies
@@ -57,9 +57,9 @@ jobs:
             custom_id="${filename%.*}" # Extracts 'bs-demo-android' from 'bs-demo-android.apk'
             
             echo "========================================================"
-            echo "☁️ Instructing BrowserStack to pull: $filename"
+            echo "Instructing BrowserStack to pull: $filename"
             
-            # 👇 Uses the direct URL parameter instead of downloading locally first
+            # Uses the direct URL parameter instead of downloading locally first
             curl -s -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" \
               -X POST "https://api-cloud.browserstack.com/app-automate/upload" \
               -F "url=$url" \
