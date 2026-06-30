@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       bs_username:
-        description: "BrowserStack Username"
+        description: "BrowserStack Username (leave blank if using GitHub Secrets)"
         required: false
         type: string
       bs_access_key:
-        description: "BrowserStack Access Key"
+        description: "BrowserStack Access Key (leave blank if using GitHub Secrets)"
         required: false
         type: string
 
@@ -24,7 +24,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "24"
           cache: "npm"
 
       - name: Install Dependencies
