@@ -12,6 +12,10 @@ on:
         required: false
         type: string
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.run_id }}
+  cancel-in-progress: false
+
 jobs:
   mobile-tests:
     name: Run Mobile E2E Tests
@@ -34,9 +38,8 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Download & Upload Apps to BrowserStack
+      - name: Tell BrowserStack to Pull Apps via URL
         run: |
-          # Define the list of apps to download
           APPS=(
             "https://github.com/saqib-browserstack/demo-creation-pipelines/releases/download/v1.0-apps/bs-demo-android.apk"
             "https://github.com/saqib-browserstack/demo-creation-pipelines/releases/download/v1.0-apps/bs-demo-app-percy-changed-android.apk"
@@ -49,22 +52,20 @@ jobs:
             "https://github.com/saqib-browserstack/demo-creation-pipelines/releases/download/v1.0-apps/bs-demo-self-heal-original-ios.ipa"
           )
 
-          # Loop through each URL, download it, and upload it with the correct custom_id
           for url in "${APPS[@]}"; do
             filename=$(basename "$url")
-            custom_id="${filename%.*}" # Strips the .apk or .ipa extension
+            custom_id="${filename%.*}" # Extracts 'bs-demo-android' from 'bs-demo-android.apk'
             
             echo "========================================================"
-            echo "Downloading: $filename"
-            curl -L -O -s "$url"
+            echo "☁️ Instructing BrowserStack to pull: $filename"
             
-            echo "Uploading to BrowserStack with custom_id: $custom_id"
+            # 👇 Uses the direct URL parameter instead of downloading locally first
             curl -s -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" \
               -X POST "https://api-cloud.browserstack.com/app-automate/upload" \
-              -F "file=@$filename" \
+              -F "url=$url" \
               -F "custom_id=$custom_id"
             
-            echo -e "\n Successfully processed $custom_id"
+            echo -e "\n Upload triggered for custom_id: $custom_id"
           done
 
       - name: Run Mobile Functional E2E Tests
