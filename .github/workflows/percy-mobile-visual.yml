@@ -40,13 +40,13 @@ jobs:
           # Fetch latest release from the upstream repo
           RELEASE=$(curl -s https://api.github.com/repos/saqib-browserstack/demo-creation-pipelines/releases/latest)
 
-          # Download Android APK
-          APK_URL=$(echo "$RELEASE" | jq -r '.assets[] | select(.name | endswith(".apk")) | .browser_download_url')
+          # Download Android APK (exact filename)
+          APK_URL=$(echo "$RELEASE" | jq -r '.assets[] | select(.name == "bs-demo-android.apk") | .browser_download_url')
           echo "Downloading Android APK from: $APK_URL"
           curl -L "$APK_URL" -o app.apk
 
-          # Download iOS IPA
-          IPA_URL=$(echo "$RELEASE" | jq -r '.assets[] | select(.name | endswith(".ipa")) | .browser_download_url')
+          # Download iOS IPA (exact filename)
+          IPA_URL=$(echo "$RELEASE" | jq -r '.assets[] | select(.name == "bs-demo-ios.ipa") | .browser_download_url')
           echo "Downloading iOS IPA from: $IPA_URL"
           curl -L "$IPA_URL" -o app.ipa
 
