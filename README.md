@@ -103,4 +103,4 @@ When contributing to this framework, please follow these guidelines:
 
 1. **Use Page Objects:** Keep locators out of the spec files. Define them in the `test/pageobjects/` folders.
 2. **Keep it Platform-Specific:** Never mix web locators with mobile locators.
-3. **Use Descriptive Names:** Ensure your `describe()` and `it()` blocks clearly explain what the test is demonstrating (e.g., "should simulate an image upload and monitor app performance"), as this text shows up directly on the BrowserStack demo dashboards!
+3. **Use Descriptive Names:** Ensure your `describe()` and `it()` blocks to clearly explain what the test is demonstrating (e.g., "should simulate an image upload and monitor app performance"), as this text shows up directly on the BrowserStack demo dashboards!
