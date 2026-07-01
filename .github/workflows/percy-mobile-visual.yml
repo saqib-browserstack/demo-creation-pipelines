@@ -1,0 +1,107 @@
+name: Percy Mobile Visual Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      username:
+        description: "Your GitHub username (branch checked out: changed_<username>)"
+        required: true
+        type: string
+      baseline:
+        description: "Compare against which baseline?"
+        required: true
+        type: choice
+        options:
+          - master
+          - Figma
+
+jobs:
+  percy-mobile:
+    name: Run Percy Mobile Visual Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.4.0
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Download Apps from Upstream Releases and Upload to BrowserStack
+        run: |
+          # Fetch latest release from the upstream repo
+          RELEASE=$(curl -s https://api.github.com/repos/saqib-browserstack/demo-creation-pipelines/releases/latest)
+
+          # Download Android APK (exact filename)
+          APK_URL=$(echo "$RELEASE" | jq -r '.assets[] | select(.name == "bs-demo-android.apk") | .browser_download_url')
+          echo "Downloading Android APK from: $APK_URL"
+          curl -L "$APK_URL" -o app.apk
+
+          # Download iOS IPA (exact filename)
+          IPA_URL=$(echo "$RELEASE" | jq -r '.assets[] | select(.name == "bs-demo-ios.ipa") | .browser_download_url')
+          echo "Downloading iOS IPA from: $IPA_URL"
+          curl -L "$IPA_URL" -o app.ipa
+
+          # Upload Android to BrowserStack with custom ID
+          echo "Uploading Android app to BrowserStack..."
+          curl -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" \
+            -X POST "https://api-cloud.browserstack.com/app-automate/upload" \
+            -F "file=@app.apk" \
+            -F "custom_id=bs-demo-android"
+
+          # Upload iOS to BrowserStack with custom ID
+          echo "Uploading iOS app to BrowserStack..."
+          curl -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" \
+            -X POST "https://api-cloud.browserstack.com/app-automate/upload" \
+            -F "file=@app.ipa" \
+            -F "custom_id=bs-demo-ios"
+        env:
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+
+      - name: Create and Push Branch
+        run: |
+          BRANCH_NAME="changed_${{ github.event.inputs.username }}"
+          git config user.name "${{ github.event.inputs.username }}"
+          git config user.email "${{ github.event.inputs.username }}@users.noreply.github.com"
+          git checkout -b "$BRANCH_NAME" 2>/dev/null || git checkout "$BRANCH_NAME"
+          echo "Percy mobile run triggered by ${{ github.event.inputs.username }} at $(date)" >> .percy-trigger
+          git add .percy-trigger
+          git commit -m "chore: percy mobile run by ${{ github.event.inputs.username }}" --allow-empty
+          git push origin "$BRANCH_NAME" --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── Baseline: master ──────────────────────────────────────────────────────
+      # Percy compares the current build against the master baseline automatically
+      # when PERCY_BRANCH is set to the feature branch and the master baseline
+      # already exists (maintained by the scheduled cron job).
+      - name: Run Percy Mobile Tests (compare vs master)
+        if: ${{ github.event.inputs.baseline == 'master' }}
+        run: npm run wdio:app-percy
+        env:
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+          PERCY_BRANCH: changed_${{ github.event.inputs.username }}
+          PERCY_TARGET_BRANCH: master
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+
+      # ── Baseline: Figma ───────────────────────────────────────────────────────
+      # Percy compares the current build against the Figma branch baseline.
+      - name: Run Percy Mobile Tests (compare vs Figma)
+        if: ${{ github.event.inputs.baseline == 'Figma' }}
+        run: npm run wdio:app-percy
+        env:
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+          PERCY_BRANCH: changed_${{ github.event.inputs.username }}
+          PERCY_TARGET_BRANCH: Figma
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
